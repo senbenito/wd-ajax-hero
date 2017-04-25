@@ -56,5 +56,21 @@
     }
   };
 
-  // ADD YOUR CODE HERE
+  $(document).ready(function() {
+    console.log('Ready to Rock!');
+    $("#searchBtn").click(function(){
+      event.preventDefault();
+      var $userSearch = $("#search").val();
+        if ($userSearch === ''){
+          window.alert("You need to enter a title to search...");
+        } else {
+          var $xhr = $.getJSON(`http://www.omdbapi.com/?t=${$userSearch}`);
+          $xhr.done(function (data){
+            console.log(data);
+            var movieCard = $(` `)
+            $("#listings").append(movieCard);
+          }); //closes $xhr.done
+        }
+      });//closes #searchBtn click
+  });//closes document.ready
 })();
