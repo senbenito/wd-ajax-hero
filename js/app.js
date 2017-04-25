@@ -56,19 +56,44 @@
     }
   };
 
+  function MovieObject(id, poster, title, year, plot){
+    this.id = id;
+    this.poster = poster;
+    this.title = title;
+    this.year = year;
+    this.plot = plot;
+  }
+
   $(document).ready(function() {
+
     console.log('Ready to Rock!');
-    $("#searchBtn").click(function(){
+    $("#submitBtn").click(function(event){
       event.preventDefault();
+      $('#listings').empty();
       var $userSearch = $("#search").val();
         if ($userSearch === ''){
           window.alert("You need to enter a title to search...");
         } else {
-          var $xhr = $.getJSON(`http://www.omdbapi.com/?t=${$userSearch}`);
+          let $xhr = $.getJSON(`http://www.omdbapi.com/?s=${$userSearch}`);
           $xhr.done(function (data){
-            console.log(data);
-            var movieCard = $(` `)
-            $("#listings").append(movieCard);
+            // var moviePlot = "";
+            // console.log(data);
+            for (let i=0; i<data.Search.length; i++){
+              let imdbId = data.Search[i].imdbID;
+              // var moviePlot = null;
+              let $yhr= $.getJSON(`http://www.omdbapi.com/?i=${imdbId}`);
+              $yhr.done(function (idPlot){
+                // console.log(idPlot);
+                // moviePlot = idPlot.Plot;
+                var movie = new MovieObject (idPlot.imdbID, idPlot.Poster, idPlot.Title, idPlot.Year, idPlot.Plot);
+                console.log(movie);
+                movies.push(movie);
+                console.log(movies);
+                renderMovies();
+              });//closes $yhr
+            }//closes for
+              //  data.Search[i].Plot);
+            $('#search').val("");//clears search input
           }); //closes $xhr.done
         }
       });//closes #searchBtn click
